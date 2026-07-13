@@ -21,7 +21,7 @@ const SLIDES = [
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [fade, setFade] = useState(true);
-  
+
   // Track touch positions for swipe logic
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -81,7 +81,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           {/* Slider Container with Touch Listeners */}
-          <div 
+          <div
             className="order-1 lg:order-2 touch-pan-y"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -95,11 +95,10 @@ export default function Hero() {
                 <img
                   src={SLIDES[currentSlide].image}
                   alt="Banner"
-                  className={`w-full h-auto object-cover hover:scale-105 transition-all duration-700 ease-in-out pointer-events-none ${
-                    fade
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
+                  className={`w-full h-auto object-cover hover:scale-105 transition-all duration-700 ease-in-out pointer-events-none ${fade
+                    ? "opacity-100"
+                    : "opacity-0"
+                    }`}
                 />
 
               </div>
@@ -111,11 +110,10 @@ export default function Hero() {
                 <button
                   key={index}
                   onClick={() => changeSlide(index)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    currentSlide === index
-                      ? "w-8 bg-[var(--color-accent)]"
-                      : "w-2.5 bg-[var(--color-border-strong)]"
-                  }`}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${currentSlide === index
+                    ? "w-8 bg-[var(--color-accent)]"
+                    : "w-2.5 bg-[var(--color-border-strong)]"
+                    }`}
                 />
               ))}
             </div>
@@ -123,19 +121,19 @@ export default function Hero() {
 
           {/* Content */}
           <div className="order-2 lg:order-1 text-center lg:text-left">
-            <span className="eyebrow">
+            <span className="eyebrow inline-block">
               Welcome To Our Company
             </span>
 
-            <h1 className="font-display mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold text-[var(--color-primary)] leading-[1.1]">
-              Premium Products
-              <br />
+            <h1 className="font-display mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-semibold text-[var(--color-primary)] leading-[1.12] tracking-[-0.02em]">
+              Premium Products{" "}
+              <br className="hidden lg:block" />
               For Modern Business
             </h1>
 
-            <p className="mt-6 text-base md:text-lg text-[var(--color-secondary)] max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Delivering high quality products and innovative
-              solutions for customers around the world.
+            <p className="mt-5 text-sm sm:text-base md:text-lg text-[var(--color-secondary)] max-w-xl mx-auto lg:mx-0 leading-[1.75]">
+              Delivering high quality products and innovative solutions for customers
+              around the world.
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-9">

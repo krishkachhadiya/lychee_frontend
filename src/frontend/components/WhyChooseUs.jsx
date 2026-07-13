@@ -10,7 +10,7 @@ export default function WhyChooseUs({ settings }) {
       : `${BACKEND_URL}${settings.whyChooseUsImage.startsWith("/") ? "" : "/"}${settings.whyChooseUsImage}`
     : "/why-us.png";
   return (
-    <section className="py-20 bg-[var(--color-card)]">
+    <section className="py-10 bg-[var(--color-card)]">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
 
         <div className="grid lg:grid-cols-2 gap-16 items-center">
