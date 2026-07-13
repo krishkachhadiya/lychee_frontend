@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import Link from "next/link";
 
 const API_URL =
@@ -8,8 +9,8 @@ const API_URL =
   "http://localhost:5000/api";
 
 // ADDED: Bring in your base URL environment variable for asset mapping
-const BACKEND_URL = 
-  process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_BASE_URL ||
   "http://localhost:5000";
 
 export default function Footer() {
@@ -173,10 +174,18 @@ export default function Footer() {
             <h3 className="font-display mb-5" style={{ fontSize: "20px", fontWeight: 600, color: "var(--color-text)" }}>
               Contact
             </h3>
-
-            <ul className="space-y-4">
-              <li style={{ color: "var(--color-footer-text)", fontSize: "14px" }}>
-                📍 {settings?.address}
+            <ul>
+              <li>
+                <a
+                  href="https://maps.app.goo.gl/XWgJTghvD135CPP86"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={linkStyle}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-footer-text)")}
+                >
+                  📍 {settings?.address}
+                </a>
               </li>
 
               <li>
@@ -197,7 +206,7 @@ export default function Footer() {
                   onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-footer-text)")}
                 >
-                 ✉️{settings?.email}
+                  ✉️{settings?.email}
                 </a>
               </li>
             </ul>
@@ -215,51 +224,50 @@ export default function Footer() {
 
             <div className="flex gap-6">
 
-              {settings?.facebook && (
-                <a
-                  href={settings.facebook}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-footer-text)")}
-                >
-                  Facebook
-                </a>
-              )}
+                {settings?.facebook && (
+                  <a
+                    href={settings.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    title="Facebook"
+                    className="w-10 h-10 flex items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-footer-text)] hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)] transition-all duration-300"
+                  >
+                    <FaFacebookF size={17} />
+                  </a>
+                )}
 
-              {settings?.instagram && (
-                <a
-                  href={settings.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-footer-text)")}
-                >
-                  Instagram
-                </a>
-              )}
+                {settings?.instagram && (
+                  <a
+                    href={settings.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    title="Instagram"
+                    className="w-10 h-10 flex items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-footer-text)] hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)] transition-all duration-300"
+                  >
+                    <FaInstagram size={18} />
+                  </a>
+                )}
 
-              {settings?.linkedin && (
-                <a
-                  href={settings.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-footer-text)")}
-                >
-                  LinkedIn
-                </a>
-              )}
-
+                {settings?.linkedin && (
+                  <a
+                    href={settings.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    title="LinkedIn"
+                    className="w-10 h-10 flex items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-footer-text)] hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)] transition-all duration-300"
+                  >
+                    <FaLinkedinIn size={17} />
+                  </a>
+                )}
             </div>
 
           </div>
         </div>
 
       </div>
-    </footer>
+    </footer >
   );
 }
