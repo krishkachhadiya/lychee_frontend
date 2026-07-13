@@ -8,7 +8,7 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:5000/api";
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL ||  "http://localhost:5000";
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
 
 function ProductCardSkeleton() {
   return (
@@ -102,51 +102,38 @@ export default function FeaturedProducts() {
 
           {loading
             ? Array.from({ length: 6 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
-              ))
+              <ProductCardSkeleton key={i} />
+            ))
             : activeProducts.map((product, index) => (
-                <div
-                  key={product._id || product.id}
-                  className="group bg-[var(--color-card)] rounded-[var(--radius-xl)] overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-1.5 transition-all duration-300 animate-fade-up"
-                  style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
-                >
-
-                  {/* Image */}
-                  <div className="relative h-40 md:h-56 overflow-hidden">
-
-                    <img
-                      src={getProductImageUrl(
-                        product.images?.[0]
-                      )}
-                      alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
-
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 md:p-6">
-
-                    <h3 className="text-sm md:text-xl font-semibold text-[var(--color-primary)] line-clamp-1">
-                      {product.title}
-                    </h3>
-
-                    <p className="mt-2 text-xs md:text-sm text-[var(--color-secondary)] line-clamp-2">
-                      {product.metaDescription ||
-                        "Premium quality product"}
-                    </p>
-
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="inline-flex items-center gap-1.5 mt-4 text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent-hover)] hover:gap-2.5 transition-all duration-200"
-                    >
-                      View Details →
-                    </Link>
-
-                  </div>
-
+              <Link
+                key={product._id || product.id}
+                href={`/products/${product.slug}`}
+                className="group block bg-[var(--color-card)] rounded-[var(--radius-xl)] overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-1.5 transition-all duration-300 animate-fade-up cursor-pointer"
+                style={{
+                  animationDelay: `${Math.min(index, 6) * 60}ms`,
+                }}
+              >
+                {/* Image */}
+                <div className="relative h-40 md:h-56 overflow-hidden">
+                  <img
+                    src={getProductImageUrl(product.images?.[0])}
+                    alt={product.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  />
                 </div>
-              ))}
+
+                {/* Content */}
+                <div className="p-4 md:p-6">
+                  <h3 className="text-sm md:text-xl font-semibold text-[var(--color-primary)] line-clamp-1">
+                    {product.title}
+                  </h3>
+
+                  <p className="mt-2 text-xs md:text-sm text-[var(--color-secondary)] line-clamp-2">
+                    {product.metaDescription || "Premium quality product"}
+                  </p>
+                </div>
+              </Link>
+            ))}
 
         </div>
 

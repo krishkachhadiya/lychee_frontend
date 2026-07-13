@@ -131,47 +131,42 @@ export default function RelatedProducts({ product }) {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading
             ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden">
-                  <div className="skeleton h-56" />
-                  <div className="p-5 space-y-3">
-                    <div className="skeleton h-4 w-3/4 rounded-[var(--radius-md)]" />
-                    <div className="skeleton h-3 w-full rounded-[var(--radius-md)]" />
-                  </div>
+              <div key={i} className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden">
+                <div className="skeleton h-56" />
+                <div className="p-5 space-y-3">
+                  <div className="skeleton h-4 w-3/4 rounded-[var(--radius-md)]" />
+                  <div className="skeleton h-3 w-full rounded-[var(--radius-md)]" />
                 </div>
-              ))
+              </div>
+            ))
             : relatedProducts.map((item, index) => (
-            <div
-              key={item._id || item.id}
-              className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm hover:shadow-[var(--shadow-lg)] hover:-translate-y-1.5 transition-all duration-300 animate-fade-up"
-              style={{ animationDelay: `${index * 60}ms` }}
-            >
-              <div className="h-56 overflow-hidden">
-                <img
-                  src={getProductImageUrl(item.images?.[0])}
-                  alt={item.title}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-700 ease-out"
-                />
-              </div>
+              <Link
+                key={item._id || item.id}
+                href={`/products/${item.slug}`}
+                className="group block bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm hover:shadow-[var(--shadow-lg)] hover:-translate-y-1.5 transition-all duration-300 animate-fade-up cursor-pointer"
+                style={{ animationDelay: `${index * 60}ms` }}
+              >
+                {/* Product Image */}
+                <div className="h-56 overflow-hidden">
+                  <img
+                    src={getProductImageUrl(item.images?.[0])}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  />
+                </div>
 
-              <div className="p-5">
-                <h3 className="text-lg font-semibold text-[var(--color-primary)] line-clamp-2">
-                  {item.title}
-                </h3>
+                {/* Product Content */}
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold text-[var(--color-primary)] line-clamp-2">
+                    {item.title}
+                  </h3>
 
-                <p className="mt-2 text-sm text-[var(--color-secondary)] line-clamp-2">
-                  {item.metaDescription ||
-                    "Premium quality product"}
-                </p>
-
-                <Link
-                  href={`/products/${item.slug}`}
-                  className="inline-flex items-center gap-1.5 mt-4 text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent-hover)] hover:gap-2.5 transition-all duration-200"
-                >
-                  View Details →
-                </Link>
-              </div>
-            </div>
-          ))}
+                  <p className="mt-2 text-sm text-[var(--color-secondary)] line-clamp-2">
+                    {item.metaDescription || "Premium quality product"}
+                  </p>
+                </div>
+              </Link>
+            ))}
         </div>
 
       </div>
