@@ -124,22 +124,12 @@ export default function BalancedContactPage() {
 
   return (
     <section className="bg-[var(--color-section)] min-h-screen pb-12 sm:pb-20 md:pb-28">
-      
-      {/* 1. NEW PAGE HEADER HERO BLOCK */}
-      <div className="bg-gradient-to-b from-[#fdf8f8] to-[var(--color-section)] py-10 md:py-16 text-center border-b border-[var(--color-border)]">
-        <div className="max-w-3xl mx-auto px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-primary)] tracking-tight">
-            Connect With Us
-          </h1>
-        </div>
-      </div>
-
       {/* 2. THE MAIN SPLIT GRID CONTAINER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-8 md:mt-12">
-        
+
         {/* Card block settings optimized for Mobile vs Desktop display */}
-        <div className="grid md:grid-cols-2 gap-8 md:gap-0 bg-transparent md:bg-[var(--color-card)] rounded-none md:rounded-[var(--radius-xl)] border-0 md:border overflow-hidden shadow-none md:shadow-2xl">
-          
+        <div className="grid md:grid-cols-2 gap-8 md:gap-0 bg-transparent md:bg-[var(--color-card)] rounded-none md:rounded-[var(--radius-lg)] border-0 md:border overflow-hidden shadow-none md:shadow-2xl">
+
           {/* LEFT 50%: Info Details panel */}
           <div className="p-2 sm:p-6 md:p-10 lg:p-16 md:border-r border-[var(--color-border)] flex flex-col justify-between md:bg-gradient-to-b md:from-[var(--color-card)] md:to-[var(--color-section)]">
             <div className="space-y-3 md:space-y-4">
@@ -159,8 +149,19 @@ export default function BalancedContactPage() {
                 <h4 className="text-xs uppercase font-bold tracking-wider text-[var(--color-secondary)]">Our Location</h4>
                 {isSettingsLoading ? (
                   <div className="h-4 w-40 bg-[var(--color-border)] animate-pulse rounded mt-2" />
+                ) : settings?.address ? (
+                  <a
+                    href="https://maps.app.goo.gl/XWgJTghvD135CPP86"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium hover:text-[var(--color-primary)] transition-colors duration-300 cursor-pointer"
+                  >
+                    {settings.address}
+                  </a>
                 ) : (
-                  <p className="mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium">{settings?.address || "Address Not Available"}</p>
+                  <p className="mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium">
+                    Address Not Available
+                  </p>
                 )}
               </div>
 
@@ -199,9 +200,9 @@ export default function BalancedContactPage() {
           </div>
 
           {/* RIGHT 50%: Form Entry panel */}
-          <div className="p-4 sm:p-6 md:p-10 lg:p-16 bg-[var(--color-card)] rounded-[var(--radius-xl)] md:rounded-none border md:border-0 border-[var(--color-border)] shadow-md md:shadow-none flex flex-col justify-center">
+          <div className="p-4 sm:p-6 md:p-10 lg:p-16 bg-[var(--color-card)] rounded-[var(--radius-lg)] md:rounded-none border md:border-0 border-[var(--color-border)] shadow-md md:shadow-none flex flex-col justify-center">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              
+
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-[var(--color-primary)]">Send a Message</h3>
                 <p className="text-xs text-[var(--color-secondary)] mt-0.5">Please fill out the details below.</p>

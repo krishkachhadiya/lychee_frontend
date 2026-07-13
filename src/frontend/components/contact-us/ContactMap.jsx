@@ -8,16 +8,16 @@ export default function ContactMap() {
       </h2>
 
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
-        <div className="overflow-hidden rounded-[var(--radius-xl)] border">
+        <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border)]">
 
           <iframe
-            title="Company Location"
-            src="https://maps.google.com/maps?q=Rajkot&t=&z=13&ie=UTF8&iwloc=&output=embed"
-            className="w-full"
-            height="450"
+            title="Lychee Bath Accessories Location"
+            src="https://www.google.com/maps?q=Lychee%20Bath%20Accessories&output=embed"
+            className="w-full h-[300px] md:h-[400px] lg:h-[450px]"
             loading="lazy"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
+            style={{ border: 0 }}
           />
 
         </div>
