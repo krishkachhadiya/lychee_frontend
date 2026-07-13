@@ -10,9 +10,8 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhos
 const MENU_ITEMS = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
-  { label : "Events", href: "/events"},
+  { label: "Events", href: "/events" },
   { label: "Products", href: "/products", hasDropdown: true },
-  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export default function Header() {
@@ -59,8 +58,8 @@ export default function Header() {
   return (
     <>
       {/* 🔴 PART 1: RED TOP BAR (Completely outside the sticky container, hidden on mobile) */}
-      <div 
-        className="hidden md:flex w-full text-white text-[13px] font-normal py-2 px-12 flex-row items-center justify-between gap-2 z-40 relative"
+      <div
+        className="hidden lg:flex w-full text-white text-[13px] font-normal py-2 px-12 flex-row items-center justify-between gap-2 z-40 relative"
         style={{ background: "#b31919", fontFamily: "var(--font-body, sans-serif)" }}
       >
         <div className="flex items-center gap-2 text-left">
@@ -81,7 +80,7 @@ export default function Header() {
       </div>
 
       {/* ⚪ PART 2: STICKY WHITE NAVBAR (This stays stuck to the screen, visible everywhere) */}
-      <nav 
+      <nav
         className="sticky top-0 left-0 w-full z-50 bg-[var(--color-background)]"
         style={{
           background: "var(--color-background)",
@@ -91,7 +90,7 @@ export default function Header() {
       >
         <div className="container-luxury">
           <div className="flex items-center justify-between" style={{ height: "var(--header-height)" }}>
-            
+
             {/* Logo */}
             <Link href="/">
               <img
@@ -102,14 +101,14 @@ export default function Header() {
             </Link>
 
             {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center gap-10">
+            <nav className="hidden lg:flex items-center gap-10">
               {MENU_ITEMS.map((item) => {
                 const isProductMenu = item.hasDropdown;
 
                 return (
-                  <div 
-                    key={item.href} 
-                    className={`relative py-5 group ${isProductMenu ? "static md:relative" : ""}`}
+                  <div
+                    key={item.href}
+                    className={`relative py-5 group ${isProductMenu ? "static lg:relative" : ""}`}
                   >
                     <Link
                       href={item.href}
@@ -133,14 +132,14 @@ export default function Header() {
 
                     {/* Multi-Column Dropdown */}
                     {isProductMenu && categories.length > 0 && (
-                      <div 
+                      <div
                         className="absolute left-1/2 -translate-x-1/2 top-full w-[550px] pt-1 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-50"
                       >
-                        <div 
+                        <div
                           className="rounded-sm shadow-xl p-5 grid grid-cols-2 gap-x-10 gap-y-3 border"
-                          style={{ 
-                            background: "var(--color-background, #fff)", 
-                            borderColor: "var(--color-border, #f0f0f0)" 
+                          style={{
+                            background: "var(--color-background, #fff)",
+                            borderColor: "var(--color-border, #f0f0f0)"
                           }}
                         >
                           {categories.map((cat) => (
@@ -148,7 +147,7 @@ export default function Header() {
                               key={cat._id}
                               href={`/products?category=${cat.slug}`}
                               className="block text-[14px] transition-colors"
-                              style={{ 
+                              style={{
                                 color: "var(--color-text, #555)",
                                 fontFamily: "var(--font-body)",
                                 fontWeight: 400
@@ -174,7 +173,7 @@ export default function Header() {
             {/* Mobile Burger Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden text-3xl"
+              className="lg:hidden text-3xl"
               style={{ color: "var(--color-primary)" }}
               aria-label="Toggle menu"
             >
@@ -186,7 +185,7 @@ export default function Header() {
         {/* Mobile Flyout Drawer Menu */}
         {menuOpen && (
           <div
-            className="md:hidden w-full"
+            className="lg:hidden w-full"
             style={{
               background: "var(--color-background)",
               borderTop: "1px solid var(--color-border)",
@@ -210,7 +209,7 @@ export default function Header() {
                         >
                           {item.label}
                         </Link>
-                        <button 
+                        <button
                           onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
                           className="px-4 text-lg font-bold"
                           style={{ color: "var(--color-text)" }}
@@ -218,7 +217,7 @@ export default function Header() {
                           {mobileProductsOpen ? "−" : "+"}
                         </button>
                       </div>
-                      
+
                       {mobileProductsOpen && (
                         <div className="pl-4 pb-3 flex flex-col gap-2">
                           {categories.map((cat) => (
