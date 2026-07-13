@@ -96,14 +96,10 @@ export default function FeaturedCategories() {
     .slice(0, 4);
 
   return (
-    <section className="py-20 bg-[var(--color-card)]">
+    <section className="py-10 bg-[var(--color-card)]">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
 
         <div className="text-center mb-12">
-          <span className="inline-block bg-[var(--color-accent-soft)] text-[var(--color-accent)] px-4 py-2 rounded-full text-sm font-semibold">
-            CATEGORIES
-          </span>
-
           <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[var(--color-primary)]">
             Browse Categories
           </h2>
