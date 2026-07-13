@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { buildMailtoHref } from "@/lib/mailto";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
@@ -59,7 +60,7 @@ export default function Header() {
     <>
       {/* 🔴 PART 1: RED TOP BAR (Completely outside the sticky container, hidden on mobile) */}
       <div
-        className="hidden lg:flex w-full text-white text-[13px] font-normal py-2 px-12 flex-row items-center justify-between gap-2 z-40 relative"
+        className="hidden md:flex w-full text-white text-[13px] font-normal py-2 px-12 flex-row items-center justify-between gap-2 z-40 relative"
         style={{ background: "#b31919", fontFamily: "var(--font-body, sans-serif)" }}
       >
         <div className="flex items-center gap-2 text-left">
@@ -70,17 +71,23 @@ export default function Header() {
           </span>
         </div>
         <div className="flex items-center gap-6 text-sm flex-wrap justify-center">
-          <a href="tel:+917016834146" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+          <a
+            href={`tel:+917016834146`}
+            className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+          >
             <span>📞</span> +91 70168 34146
           </a>
-          <a href="mailto:lycheebathaccessories@gmail.com" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+          <a
+            href={buildMailtoHref("lycheebathaccessories@gmail.com")}
+            className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+          >
             <span>✉️</span> lycheebathaccessories@gmail.com
           </a>
         </div>
       </div>
 
-      {/* ⚪ PART 2: STICKY WHITE NAVBAR (This stays stuck to the screen, visible everywhere) */}
-      <nav
+      {/* ⚪ PART 2: STICKY WHITE HEADER (sticky landmark; the actual link list below is the <nav>) */}
+      <header
         className="sticky top-0 left-0 w-full z-50 bg-[var(--color-background)]"
         style={{
           background: "var(--color-background)",
@@ -92,7 +99,7 @@ export default function Header() {
           <div className="flex items-center justify-between" style={{ height: "var(--header-height)" }}>
 
             {/* Logo */}
-            <Link href="/">
+            <Link href="/" className="shrink-0">
               <img
                 src={getLogoUrl()}
                 alt={settings?.companyName || "Logo"}
@@ -101,18 +108,20 @@ export default function Header() {
             </Link>
 
             {/* Desktop Menu */}
-            <nav className="hidden lg:flex items-center gap-10">
+            <nav className="hidden md:flex items-center gap-5" aria-label="Primary">
               {MENU_ITEMS.map((item) => {
                 const isProductMenu = item.hasDropdown;
 
                 return (
                   <div
                     key={item.href}
-                    className={`relative py-5 group ${isProductMenu ? "static lg:relative" : ""}`}
+                    className={`relative py-5 group ${isProductMenu ? "static md:relative" : ""}`}
                   >
                     <Link
                       href={item.href}
                       className="transition-all flex items-center gap-1"
+                      aria-current={isActiveRoute(item.href) ? "page" : undefined}
+                      aria-haspopup={isProductMenu ? "true" : undefined}
                       style={{
                         fontFamily: "var(--font-body)",
                         fontSize: "14px",
@@ -130,13 +139,13 @@ export default function Header() {
                       )}
                     </Link>
 
-                    {/* Multi-Column Dropdown */}
                     {isProductMenu && categories.length > 0 && (
                       <div
-                        className="absolute left-1/2 -translate-x-1/2 top-full w-[550px] pt-1 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-50"
+                        className="absolute right-0 top-full pt-1 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-50"
+                        style={{ width: "min(550px, calc(100vw - 32px))" }}
                       >
                         <div
-                          className="rounded-sm shadow-xl p-5 grid grid-cols-2 gap-x-10 gap-y-3 border"
+                          className="rounded-[var(--radius-md)] shadow-xl p-5 grid grid-cols-2 gap-x-10 gap-y-3 border"
                           style={{
                             background: "var(--color-background, #fff)",
                             borderColor: "var(--color-border, #f0f0f0)"
@@ -173,9 +182,11 @@ export default function Header() {
             {/* Mobile Burger Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden text-3xl"
+              className="md:hidden text-3xl"
               style={{ color: "var(--color-primary)" }}
-              aria-label="Toggle menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
             >
               {menuOpen ? "✕" : "☰"}
             </button>
@@ -184,7 +195,9 @@ export default function Header() {
 
         {/* Mobile Flyout Drawer Menu */}
         {menuOpen && (
-          <div
+          <nav
+            id="mobile-menu"
+            aria-label="Primary"
             className="lg:hidden w-full"
             style={{
               background: "var(--color-background)",
@@ -213,13 +226,16 @@ export default function Header() {
                           onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
                           className="px-4 text-lg font-bold"
                           style={{ color: "var(--color-text)" }}
+                          aria-label={mobileProductsOpen ? "Collapse product categories" : "Expand product categories"}
+                          aria-expanded={mobileProductsOpen}
+                          aria-controls="mobile-products-submenu"
                         >
                           {mobileProductsOpen ? "−" : "+"}
                         </button>
                       </div>
 
                       {mobileProductsOpen && (
-                        <div className="pl-4 pb-3 flex flex-col gap-2">
+                        <div id="mobile-products-submenu" className="pl-4 pb-3 flex flex-col gap-2">
                           {categories.map((cat) => (
                             <Link
                               key={cat._id}
@@ -264,9 +280,9 @@ export default function Header() {
                 Get In Touch
               </Link>
             </div>
-          </div>
+          </nav>
         )}
-      </nav>
+      </header>
     </>
   );
 }

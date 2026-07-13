@@ -15,6 +15,7 @@ const BACKEND_URL =
 export default function RelatedProducts({ product }) {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   function getProductImageUrl(imagePath) {
     if (!imagePath || typeof imagePath !== "string") {
@@ -97,21 +98,25 @@ export default function RelatedProducts({ product }) {
         setRelatedProducts(related.slice(0, 4));
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     }
 
     if (product) {
       fetchData();
+    } else {
+      setLoading(false);
     }
   }, [product]);
 
-  if (relatedProducts.length === 0) {
+  if (!loading && relatedProducts.length === 0) {
     return null;
   }
 
   return (
     <section className="py-12 bg-[var(--color-card)]">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+      <div className="container-luxury">
 
         <div className="mb-8">
           <span className="inline-block bg-[var(--color-accent-soft)] text-[var(--color-accent)] px-4 py-2 rounded-full text-sm font-semibold">
@@ -124,16 +129,27 @@ export default function RelatedProducts({ product }) {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedProducts.map((item) => (
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden">
+                  <div className="skeleton h-56" />
+                  <div className="p-5 space-y-3">
+                    <div className="skeleton h-4 w-3/4 rounded-[var(--radius-md)]" />
+                    <div className="skeleton h-3 w-full rounded-[var(--radius-md)]" />
+                  </div>
+                </div>
+              ))
+            : relatedProducts.map((item, index) => (
             <div
               key={item._id || item.id}
-              className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm hover:shadow-[var(--shadow-lg)] transition"
+              className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm hover:shadow-[var(--shadow-lg)] hover:-translate-y-1.5 transition-all duration-300 animate-fade-up"
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <div className="h-56 overflow-hidden">
                 <img
                   src={getProductImageUrl(item.images?.[0])}
                   alt={item.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-700 ease-out"
                 />
               </div>
 
@@ -149,7 +165,7 @@ export default function RelatedProducts({ product }) {
 
                 <Link
                   href={`/products/${item.slug}`}
-                  className="inline-block mt-4 text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent-hover)] transition"
+                  className="inline-flex items-center gap-1.5 mt-4 text-[var(--color-accent)] font-semibold hover:text-[var(--color-accent-hover)] hover:gap-2.5 transition-all duration-200"
                 >
                   View Details →
                 </Link>

@@ -1,8 +1,13 @@
 "use client";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
+import Link from "next/link";
+import { useScrollReveal } from "@/lib/useScrollReveal";
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
 
-export default function Aboutpre({ settings }) {
+export default function Aboutpre({ settings, headingLevel = "h2" }) {
+  const revealRef = useScrollReveal();
+  const HeadingTag = headingLevel;
   const imageUrl = settings?.aboutImage
     ? settings.aboutImage.startsWith("http")
       ? settings.aboutImage
@@ -10,12 +15,14 @@ export default function Aboutpre({ settings }) {
       }${settings.aboutImage}`
     : "/about-us.jpg";
   return (
-    <section className="w-full bg-[var(--color-section)] py-16 lg:py-24">
+    <section ref={revealRef} className="reveal-on-scroll py-15 bg-[var(--color-section)]">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+
           {/* Image */}
           <div className="relative">
-            <div className="overflow-hidden rounded-[32px] shadow-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
+            <div className="overflow-hidden rounded-[var(--radius-xl)] shadow-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
               <img
                 src={imageUrl}
                 alt="About Lychee"
@@ -51,6 +58,6 @@ export default function Aboutpre({ settings }) {
           </div>
         </div>
       </div>
-    </section >
+    </section>
   );
 }

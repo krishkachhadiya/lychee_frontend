@@ -1,17 +1,20 @@
 "use client";
 
+import { useScrollReveal } from "@/lib/useScrollReveal";
+
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
 
 export default function WhyChooseUs({ settings }) {
+  const revealRef = useScrollReveal();
   const imageUrl = settings?.whyChooseUsImage
     ? settings.whyChooseUsImage.startsWith("http")
       ? settings.whyChooseUsImage
       : `${BACKEND_URL}${settings.whyChooseUsImage.startsWith("/") ? "" : "/"}${settings.whyChooseUsImage}`
     : "/why-us.png";
   return (
-    <section className="py-10 bg-[var(--color-card)]">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+    <section ref={revealRef} className="reveal-on-scroll py-10 bg-[var(--color-card)]">
+      <div className="container-luxury">
 
         <div className="grid lg:grid-cols-2 gap-16 items-center">
 

@@ -92,7 +92,7 @@ export default function ProductGallery({ product }) {
               <div
                 key={index}
                 onClick={() => openGallery(index)}
-                className={`overflow-hidden rounded-md bg-[var(--color-section)] border border-[var(--color-border)] cursor-zoom-in group ${
+                className={`overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-section)] border border-[var(--color-border)] cursor-zoom-in group ${
                   isFirstImage ? "col-span-1 md:col-span-2" : "col-span-1"
                 }`}
               >

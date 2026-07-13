@@ -58,8 +58,27 @@ export default function ProductDetailsContent({ slug }) {
 
   if (loading) {
     return (
-      <section className="py-20 text-center">
-        Loading Product...
+      <section className="py-12 bg-[var(--color-section)]">
+        <div className="container-luxury">
+          <div className="skeleton h-4 w-56 rounded-[var(--radius-md)] mb-8" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mt-8">
+            <div className="lg:col-span-7 w-full space-y-4">
+              <div className="skeleton w-full aspect-square rounded-[var(--radius-xl)]" />
+              <div className="flex gap-3">
+                <div className="skeleton w-20 h-20 rounded-[var(--radius-md)]" />
+                <div className="skeleton w-20 h-20 rounded-[var(--radius-md)]" />
+                <div className="skeleton w-20 h-20 rounded-[var(--radius-md)]" />
+              </div>
+            </div>
+            <div className="lg:col-span-5 w-full space-y-4">
+              <div className="skeleton h-8 w-3/4 rounded-[var(--radius-md)]" />
+              <div className="skeleton h-4 w-full rounded-[var(--radius-md)]" />
+              <div className="skeleton h-4 w-5/6 rounded-[var(--radius-md)]" />
+              <div className="skeleton h-4 w-2/3 rounded-[var(--radius-md)]" />
+              <div className="skeleton h-12 w-40 rounded-[var(--radius-md)] mt-6" />
+            </div>
+          </div>
+        </div>
       </section>
     );
   }
@@ -74,7 +93,7 @@ export default function ProductDetailsContent({ slug }) {
   return (
     <>
       <section className="py-12 bg-[var(--color-section)]">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <div className="container-luxury">
 
           <ProductBreadcrumb product={product} />
 

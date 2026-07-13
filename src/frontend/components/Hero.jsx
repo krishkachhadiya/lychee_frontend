@@ -96,8 +96,8 @@ export default function Hero() {
                   src={SLIDES[currentSlide].image}
                   alt="Banner"
                   className={`w-full h-auto object-cover hover:scale-105 transition-all duration-700 ease-in-out pointer-events-none ${fade
-                    ? "opacity-100"
-                    : "opacity-0"
+                      ? "opacity-100"
+                      : "opacity-0"
                     }`}
                 />
 
@@ -111,8 +111,8 @@ export default function Hero() {
                   key={index}
                   onClick={() => changeSlide(index)}
                   className={`h-2.5 rounded-full transition-all duration-300 ${currentSlide === index
-                    ? "w-8 bg-[var(--color-accent)]"
-                    : "w-2.5 bg-[var(--color-border-strong)]"
+                      ? "w-8 bg-[var(--color-accent)]"
+                      : "w-2.5 bg-[var(--color-border-strong)]"
                     }`}
                 />
               ))}
@@ -121,7 +121,7 @@ export default function Hero() {
 
           {/* Content */}
           <div className="order-2 lg:order-1 text-center lg:text-left">
-            <span className="eyebrow inline-block">
+            <span className="eyebrow">
               Welcome To Our Company
             </span>
 
@@ -131,9 +131,9 @@ export default function Hero() {
               For Modern Business
             </h1>
 
-            <p className="mt-5 text-sm sm:text-base md:text-lg text-[var(--color-secondary)] max-w-xl mx-auto lg:mx-0 leading-[1.75]">
-              Delivering high quality products and innovative solutions for customers
-              around the world.
+            <p className="mt-6 text-base md:text-lg text-[var(--color-secondary)] max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Delivering high quality products and innovative
+              solutions for customers around the world.
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-9">

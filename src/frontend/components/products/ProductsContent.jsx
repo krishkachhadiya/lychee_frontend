@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Fully bulletproofed recursive tree lookup handler
 function belongsToMainCategory(productCategoryId, mainCategoryId, allCategoriesPool) {
@@ -36,7 +36,21 @@ function belongsToMainCategory(productCategoryId, mainCategoryId, allCategoriesP
     return false;
 }
 
+function ProductCardSkeleton() {
+    return (
+        <div className="rounded-[var(--radius-xl)] overflow-hidden border border-[var(--color-border)] bg-[var(--color-card)]">
+            <div className="skeleton h-64" />
+            <div className="p-5 space-y-3">
+                <div className="skeleton h-4 w-3/4 rounded-[var(--radius-md)]" />
+                <div className="skeleton h-3 w-full rounded-[var(--radius-md)]" />
+                <div className="skeleton h-3 w-1/2 rounded-[var(--radius-md)]" />
+            </div>
+        </div>
+    );
+}
+
 export default function ProductsContent() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const categoryUrlSlug = searchParams.get("category"); // Reads '?category=slug' from header link
 
@@ -45,6 +59,7 @@ export default function ProductsContent() {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [productsPerPage, setProductsPerPage] = useState(8);
     const [currentPage, setCurrentPage] = useState(1);
+    const [productsLoading, setProductsLoading] = useState(true);
 
     const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
 
@@ -80,6 +95,8 @@ export default function ProductsContent() {
                 setAllCategories(rawCategories);
             } catch (error) {
                 console.error("Error loading catalogue dependencies:", error);
+            } finally {
+                setProductsLoading(false);
             }
         }
 
@@ -127,58 +144,122 @@ export default function ProductsContent() {
     const currentCategoryObj = allCategories.find(c => String(c._id || c.id) === String(selectedCategory));
     const titleText = currentCategoryObj ? currentCategoryObj.title : "All Products";
 
+    // Top-level categories only, active ones — kept simple: category names as filters, nothing else.
+    const topLevelCategories = allCategories.filter(
+        (c) => c.status === "active" && !c.parent
+    );
+
+    function handleCategoryClick(slug) {
+        if (!slug) {
+            router.push("/products", { scroll: false });
+        } else {
+            router.push(`/products?category=${slug}`, { scroll: false });
+        }
+    }
+
     return (
         <section className="py-10 bg-[var(--color-card)]">
-            <div className="max-w-7xl mx-auto px-4 lg:px-8">
+            <div className="container-luxury">
 
-                {/* Simplified Dynamic Title Banner */}
-                <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-5 mb-8">
-                    <h2 className="text-2xl font-bold text-[var(--color-primary)]">
+                {/* Page heading */}
+                <div className="flex justify-between items-center gap-4 flex-wrap mb-6">
+                    <h1 className="text-2xl font-bold text-[var(--color-primary)]">
                         {titleText}
-                    </h2>
+                    </h1>
                     <div className="px-4 py-2 rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)] font-medium text-sm">
                         {filteredProducts.length} Products Found
                     </div>
                 </div>
 
-                {/* Catalog Card Grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {paginatedProducts.map((product, index) => {
-                        const prodId = product._id || product.id;
-                        return (
-                            <Link
-                                key={prodId || index}
-                                href={`/products/${product.slug}`}
-                                className="block bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden group hover:-translate-y-2 hover:shadow-[var(--shadow-lg)] transition-all duration-300 cursor-pointer"
-                            >
-                                <div className="relative h-64 overflow-hidden">
-                                    <img
-                                        src={getProductImageUrl(product.images?.[0])}
-                                        alt={product.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                </div>
+                {/* Category Filter — names only, no search/sort/price/etc. */}
+                <div
+                    className="flex items-center gap-3 overflow-x-auto pb-5 mb-8 border-b border-[var(--color-border)] scrollbar-thin"
+                    role="tablist"
+                    aria-label="Filter products by category"
+                >
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={selectedCategory === "all"}
+                        onClick={() => handleCategoryClick(null)}
+                        className={`shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ${
+                            selectedCategory === "all"
+                                ? "bg-[var(--color-accent)] text-[var(--color-white)]"
+                                : "bg-[var(--color-section)] text-[var(--color-text)] hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-accent)]"
+                        }`}
+                    >
+                        All Products
+                    </button>
 
-                                <div className="p-5">
-                                    <h3 className="text-lg font-semibold text-[var(--color-primary)] line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors duration-200">
-                                        {product.title}
-                                    </h3>
-                                    <p className="mt-3 text-sm text-[var(--color-secondary)] line-clamp-2">
-                                        {product.metaDescription || "Premium quality product"}
-                                    </p>
-                                    <div className="inline-block mt-4 text-[var(--color-accent)] font-medium">
-                                        <span className="inline-flex items-center gap-2 text-[var(--color-accent)] font-semibold">
-                                            View Details &rarr;
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
+                    {topLevelCategories.map((cat) => {
+                        const catId = cat._id || cat.id;
+                        const isActive = String(selectedCategory) === String(catId);
+                        return (
+                            <button
+                                key={catId}
+                                type="button"
+                                role="tab"
+                                aria-selected={isActive}
+                                onClick={() => handleCategoryClick(cat.slug)}
+                                className={`shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ${
+                                    isActive
+                                        ? "bg-[var(--color-accent)] text-[var(--color-white)]"
+                                        : "bg-[var(--color-section)] text-[var(--color-text)] hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-accent)]"
+                                }`}
+                            >
+                                {cat.title}
+                            </button>
                         );
                     })}
                 </div>
 
+                {/* Catalog Card Grid */}
+                {productsLoading ? (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {Array.from({ length: productsPerPage }).map((_, i) => (
+                            <ProductCardSkeleton key={i} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {paginatedProducts.map((product, index) => {
+                            const prodId = product._id || product.id;
+                            return (
+                                <Link
+                                    key={prodId || index}
+                                    href={`/products/${product.slug}`}
+                                    className="block bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] overflow-hidden group hover:-translate-y-2 hover:shadow-[var(--shadow-lg)] transition-all duration-300 cursor-pointer animate-fade-up"
+                                    style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+                                >
+                                    <div className="relative h-64 overflow-hidden">
+                                        <img
+                                            src={getProductImageUrl(product.images?.[0])}
+                                            alt={product.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    </div>
+
+                                    <div className="p-5">
+                                        <h3 className="text-lg font-semibold text-[var(--color-primary)] line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors duration-200">
+                                            {product.title}
+                                        </h3>
+                                        <p className="mt-3 text-sm text-[var(--color-secondary)] line-clamp-2">
+                                            {product.metaDescription || "Premium quality product"}
+                                        </p>
+                                        <div className="inline-block mt-4 text-[var(--color-accent)] font-medium">
+                                            <span className="inline-flex items-center gap-2 text-[var(--color-accent)] font-semibold">
+                                                View Details &rarr;
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
+
                 {/* Empty Fallback Block */}
-                {filteredProducts.length === 0 && (
+                {!productsLoading && filteredProducts.length === 0 && (
                     <div className="text-center py-20">
                         <h3 className="text-2xl font-semibold text-[var(--color-primary)]">No Products Listed</h3>
                         <p className="mt-3 text-[var(--color-text-muted)]">No products found inside this collection yet.</p>

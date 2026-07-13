@@ -33,7 +33,7 @@ export default function CategoryPicker({
       {/* Modal */}
       {open && (
         <div className="fixed inset-0 bg-[var(--color-overlay)] z-50 flex items-center justify-center">
-          <div className="bg-[var(--color-card)] rounded-[var(--radius-lg)] w-full max-w-2xl p-6 max-h-[80vh] overflow-y-auto">
+          <div className="bg-[var(--color-card)] rounded-[var(--radius-xl)] w-full max-w-2xl p-6 max-h-[80vh] overflow-y-auto">
             
             {/* Header */}
             <div className="flex justify-between items-center mb-4 text-[var(--color-text)]">

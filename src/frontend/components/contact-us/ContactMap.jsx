@@ -7,11 +7,11 @@ export default function ContactMap() {
         Our Location
       </h2>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
-        <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border)]">
+      <div className="container-luxury">
+        <div className="overflow-hidden rounded-[var(--radius-xl)] border">
 
           <iframe
-            title="Lychee Bath Accessories Location"
+             title="Lychee Bath Accessories Location"
             src="https://www.google.com/maps?q=Lychee%20Bath%20Accessories&output=embed"
             className="w-full h-[300px] md:h-[400px] lg:h-[450px]"
             loading="lazy"

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useScrollReveal } from "@/lib/useScrollReveal";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -27,8 +28,20 @@ const getCategoryImageUrl = (image = "") => {
   return `${BACKEND_URL}/uploads/${cleanPath}`;
 };
 
+function CategoryCardSkeleton() {
+  return (
+    <div className="bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-4 md:p-6">
+      <div className="skeleton w-full h-40 rounded-[var(--radius-md)]" />
+      <div className="skeleton mt-4 h-4 w-2/3 rounded-[var(--radius-md)]" />
+      <div className="skeleton mt-2 h-3 w-1/2 rounded-[var(--radius-md)]" />
+    </div>
+  );
+}
+
 export default function FeaturedCategories() {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const revealRef = useScrollReveal();
 
   useEffect(() => {
     async function fetchData() {
@@ -70,17 +83,11 @@ export default function FeaturedCategories() {
           };
         });
 
-        const activeCategories = updatedCategories
-          .filter(
-            (item) =>
-              item.status === "active" &&
-              item.parent === null
-          )
-          .slice(0, 4);
-
         setCategories(updatedCategories);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -96,8 +103,8 @@ export default function FeaturedCategories() {
     .slice(0, 4);
 
   return (
-    <section className="py-10 bg-[var(--color-card)]">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+    <section ref={revealRef} className="reveal-on-scroll py-10 bg-[var(--color-card)]">
+      <div className="container-luxury">
 
         <div className="text-center mb-12">
           <h2 className="mt-4 text-3xl md:text-4xl font-bold text-[var(--color-primary)]">
@@ -106,32 +113,34 @@ export default function FeaturedCategories() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {activeCategories.map((category) => {
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <CategoryCardSkeleton key={i} />
+              ))
+            : activeCategories.map((category, index) => (
+                <Link
+                  key={category._id}
+                  href={`/products?category=${category.slug}`}
+                  className="group bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-4 md:p-6 hover:border-[var(--color-accent)] hover:shadow-[var(--shadow-md)] hover:-translate-y-1.5 transition-all duration-300 animate-fade-up"
+                  style={{ animationDelay: `${index * 60}ms` }}
+                >
+                  <div className="w-full h-40 rounded-[var(--radius-md)] overflow-hidden bg-[var(--color-section)]">
+                    <img
+                      src={getCategoryImageUrl(category.image)}
+                      alt={category.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                  </div>
 
-            return (
-              <Link
-                key={category._id}
-                href={`/products?category=${category.slug}`}
-                className="group bg-[var(--color-card)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 md:p-6 hover:border-[var(--color-accent)] hover:shadow-[var(--shadow-md)] transition-all duration-300"
-              >
-                <div className="w-full h-40 rounded-[var(--radius-md)] overflow-hidden bg-[var(--color-section)]">
-                  <img
-                    src={getCategoryImageUrl(category.image)}
-                    alt={category.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                  />
-                </div>
+                  <h3 className="mt-4 text-sm md:text-lg font-semibold text-[var(--color-primary)] group-hover:text-[var(--color-accent)] transition">
+                    {category.title}
+                  </h3>
 
-                <h3 className="mt-4 text-sm md:text-lg font-semibold text-[var(--color-primary)] group-hover:text-[var(--color-accent)] transition">
-                  {category.title}
-                </h3>
-
-                <p className="mt-2 text-xs md:text-sm text-[var(--color-secondary)]">
-                  Explore products
-                </p>
-              </Link>
-            );
-          })}
+                  <p className="mt-2 text-xs md:text-sm text-[var(--color-secondary)]">
+                    Explore products
+                  </p>
+                </Link>
+              ))}
         </div>
 
       </div>

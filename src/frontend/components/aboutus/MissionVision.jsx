@@ -1,9 +1,12 @@
 "use client";
 
+import { useScrollReveal } from "@/lib/useScrollReveal";
+
 export default function MissionVision() {
+  const revealRef = useScrollReveal();
   return (
-    <section className="py-20 bg-[var(--color-section)]">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+    <section ref={revealRef} className="reveal-on-scroll py-20 bg-[var(--color-section)]">
+      <div className="container-luxury">
 
         {/* Header */}
         <div className="text-center mb-12">
@@ -20,7 +23,7 @@ export default function MissionVision() {
         <div className="grid md:grid-cols-3 gap-6">
 
           {/* Mission */}
-          <div className="bg-[var(--color-card)] p-8 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:shadow-[var(--shadow-md)] transition">
+          <div className="bg-[var(--color-card)] p-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] hover:shadow-[var(--shadow-md)] transition">
             <div className="w-14 h-14 rounded-[var(--radius-md)] bg-[var(--color-accent-soft)] flex items-center justify-center text-2xl mb-5">
               🎯
             </div>
@@ -36,7 +39,7 @@ export default function MissionVision() {
           </div>
 
           {/* Vision */}
-          <div className="bg-[var(--color-card)] p-8 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:shadow-[var(--shadow-md)] transition">
+          <div className="bg-[var(--color-card)] p-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] hover:shadow-[var(--shadow-md)] transition">
             <div className="w-14 h-14 rounded-[var(--radius-md)] bg-[var(--color-accent-soft)] flex items-center justify-center text-2xl mb-5">
               🚀
             </div>
@@ -52,7 +55,7 @@ export default function MissionVision() {
           </div>
 
           {/* Values */}
-          <div className="bg-[var(--color-card)] p-8 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:shadow-[var(--shadow-md)] transition">
+          <div className="bg-[var(--color-card)] p-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] hover:shadow-[var(--shadow-md)] transition">
             <div className="w-14 h-14 rounded-[var(--radius-md)] bg-[var(--color-accent-soft)] flex items-center justify-center text-2xl mb-5">
               ⭐
             </div>

@@ -47,7 +47,7 @@ export default function AboutUs() {
 
   return (
     <div className="bg-[var(--color-card)]">
-      <Aboutpre settings={settings} />
+      <Aboutpre settings={settings} headingLevel="h1" />
       <CompanyStory />
       <MissionVision />
       <WhyChooseUs settings={settings} />

@@ -1,9 +1,12 @@
 "use client";
 
+import { useScrollReveal } from "@/lib/useScrollReveal";
+
 export default function CompanyStory() {
+  const revealRef = useScrollReveal();
   return (
-    <section className="py-15 bg-[var(--color-card)]">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+    <section ref={revealRef} className="reveal-on-scroll py-15 bg-[var(--color-card)]">
+      <div className="container-luxury">
 
         <div className="text-center mb-16">
           <span className="inline-block bg-[var(--color-accent-soft)] text-[var(--color-accent)] px-4 py-2 rounded-full text-sm font-semibold">
@@ -24,7 +27,7 @@ export default function CompanyStory() {
 
         <div className="grid md:grid-cols-3 gap-8 mt-12">
 
-          <div className="text-center bg-[var(--color-card)] p-8 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-2 transition-all duration-300">
+          <div className="text-center bg-[var(--color-card)] p-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-2 transition-all duration-300">
             <div className="w-16 h-16 mx-auto rounded-full bg-[var(--color-accent)] text-[var(--color-white)] flex items-center justify-center text-xl font-bold shadow-[var(--shadow-md)]">
               01
             </div>
@@ -40,7 +43,7 @@ export default function CompanyStory() {
             </p>
           </div>
 
-          <div className="text-center bg-[var(--color-card)] p-8 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-2 transition-all duration-300">
+          <div className="text-center bg-[var(--color-card)] p-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-2 transition-all duration-300">
             <div className="w-16 h-16 mx-auto rounded-full bg-[var(--color-accent)] text-[var(--color-white)] flex items-center justify-center text-xl font-bold shadow-[var(--shadow-md)]">
               02
             </div>
@@ -56,7 +59,7 @@ export default function CompanyStory() {
             </p>
           </div>
 
-          <div className="text-center bg-[var(--color-card)] p-8 rounded-[var(--radius-lg)] border border-[var(--color-border)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-2 transition-all duration-300">
+          <div className="text-center bg-[var(--color-card)] p-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-2 transition-all duration-300">
             <div className="w-16 h-16 mx-auto rounded-full bg-[var(--color-accent)] text-[var(--color-white)] flex items-center justify-center text-xl font-bold shadow-[var(--shadow-md)]">
               03
             </div>

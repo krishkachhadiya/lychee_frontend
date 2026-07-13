@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { useScrollReveal } from "@/lib/useScrollReveal";
 
 export default function CTA() {
+  const revealRef = useScrollReveal();
   return (
-    <section className="py-16 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+    <section ref={revealRef} className="reveal-on-scroll py-16 md:py-20">
+      <div className="container-luxury">
         <div className="bg-[var(--color-primary)] rounded-[var(--radius-xl)] overflow-hidden shadow-xl">
           <div className="px-6 py-12 md:px-10 md:py-16 lg:px-16 text-center">
             

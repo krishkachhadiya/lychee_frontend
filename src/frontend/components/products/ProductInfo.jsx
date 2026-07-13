@@ -22,7 +22,7 @@ export default function ProductSidebarInfo({ product }) {
         {/* Product ID & Category Quick Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
           {/* Product ID */}
-          <div className="bg-[var(--color-section)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-5">
+          <div className="bg-[var(--color-section)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-5">
             <p className="text-sm text-[var(--color-text-muted)]">Product Code</p>
             <p className="mt-2 font-semibold text-[var(--color-primary)] truncate">
               {product?.productCode || product?._id}
@@ -30,7 +30,7 @@ export default function ProductSidebarInfo({ product }) {
           </div>
 
           {/* Category */}
-          <div className="bg-[var(--color-section)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-5">
+          <div className="bg-[var(--color-section)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-5">
             <p className="text-sm text-[var(--color-text-muted)]">Category</p>
             <p className="mt-2 font-semibold text-[var(--color-primary)] truncate">
               {categoryName}
@@ -62,7 +62,7 @@ export default function ProductSidebarInfo({ product }) {
           </div>
 
           {/* Clean Split Grid Specification Rows */}
-          <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-sm bg-[var(--color-card)]">
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm bg-[var(--color-card)]">
             {specifications.map((specification, index) => {
               const [key, value] = specification.split(":");
 

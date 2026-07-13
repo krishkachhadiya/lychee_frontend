@@ -5,7 +5,6 @@
    ========================================================= */
 
 :root {
---color-navbar: #F7F9FC;
   /* ===========================
      Brand
   =========================== */
@@ -45,6 +44,7 @@
   =========================== */
 
   --color-accent-soft: rgba(199, 46, 46, 0.08); /* Updated: Soft Red tint */
+  --color-primary-soft: rgba(199, 46, 46, 0.08); /* Same red family as accent-soft — primary and accent share the brand red */
 
   /* ===========================
      Dark UI (Admin Sidebar)
