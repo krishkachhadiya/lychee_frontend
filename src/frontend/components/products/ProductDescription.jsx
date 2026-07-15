@@ -1,7 +1,9 @@
 "use client";
 
 export default function ProductDescription({ product }) {
-  if (!product.description) {
+  const rawDesc = product?.description || "";
+  const cleanText = rawDesc.replace(/<[^>]*>/g, '').trim();
+  if (!cleanText || cleanText === "undefined" || cleanText === "null") {
     return null;
   }
 
@@ -24,7 +26,7 @@ export default function ProductDescription({ product }) {
           <div
             className="prose max-w-none text-[var(--color-text)]"
             dangerouslySetInnerHTML={{
-              __html: product.description,
+              __html: rawDesc,
             }}
           />
 

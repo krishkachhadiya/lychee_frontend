@@ -80,9 +80,6 @@ export default function ProductSidebarInfo({ product }) {
       {specifications.length > 0 && (
         <div className="mt-4 pt-6 border-t border-[var(--color-border)]">
           <div className="mb-6">
-            <span className="inline-block bg-[var(--color-accent-soft)] text-[var(--color-accent)] px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
-              TECHNICAL DETAILS
-            </span>
             <h2 className="mt-2 text-2xl font-bold text-[var(--color-primary)]">
               Specifications
             </h2>

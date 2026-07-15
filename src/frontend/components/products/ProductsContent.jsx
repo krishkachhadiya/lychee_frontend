@@ -52,7 +52,7 @@ function ProductCardSkeleton() {
 export default function ProductsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const categoryUrlSlug = searchParams.get("category"); // Reads '?category=slug' from header link
+    const categoryUrlSlug = searchParams.get("category");
 
     const [products, setProducts] = useState([]);
     const [allCategories, setAllCategories] = useState([]); 
@@ -60,6 +60,9 @@ export default function ProductsContent() {
     const [productsPerPage, setProductsPerPage] = useState(8);
     const [currentPage, setCurrentPage] = useState(1);
     const [productsLoading, setProductsLoading] = useState(true);
+    
+    // Toggle state for the category dropdown menu (unified for all screen sizes)
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
 
@@ -74,7 +77,6 @@ export default function ProductsContent() {
         return `${BACKEND_BASE_URL}/uploads/${cleanPath}`;
     };
 
-    // Load data from APIs
     useEffect(() => {
         async function fetchData() {
             try {
@@ -103,7 +105,6 @@ export default function ProductsContent() {
         fetchData();
     }, []);
 
-    // Sync state with header url changes
     useEffect(() => {
         if (categoryUrlSlug && allCategories.length > 0) {
             const matchingCat = allCategories.find(
@@ -118,10 +119,9 @@ export default function ProductsContent() {
         } else {
             setSelectedCategory("all");
         }
-        setCurrentPage(1); // Reset pagination on category shift
+        setCurrentPage(1); 
     }, [categoryUrlSlug, allCategories]);
 
-    // Simple Filter Logic (Only Category Matching)
     const filteredProducts = products.filter((product) => {
         const productCategoryId = product.category && typeof product.category === 'object'
             ? (product.category._id || product.category.id)
@@ -135,16 +135,13 @@ export default function ProductsContent() {
         return isDirectMatch || isRecursiveChildMatch;
     });
 
-    // Pagination Calculation
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
     const startIndex = (currentPage - 1) * productsPerPage;
     const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
 
-    // Dynamic Header Title Strategy based on selected route category
     const currentCategoryObj = allCategories.find(c => String(c._id || c.id) === String(selectedCategory));
     const titleText = currentCategoryObj ? currentCategoryObj.title : "All Products";
 
-    // Top-level categories only, active ones — kept simple: category names as filters, nothing else.
     const topLevelCategories = allCategories.filter(
         (c) => c.status === "active" && !c.parent
     );
@@ -155,62 +152,72 @@ export default function ProductsContent() {
         } else {
             router.push(`/products?category=${slug}`, { scroll: false });
         }
+        setIsMenuOpen(false); // Close dropdown upon selection
     }
 
     return (
         <section className="py-10 bg-[var(--color-card)]">
             <div className="container-luxury">
 
-                {/* Page heading */}
-                <div className="flex justify-between items-center gap-4 flex-wrap mb-6">
+                {/* Header Title */}
+                <div className="mb-6">
                     <h1 className="text-2xl font-bold text-[var(--color-primary)]">
                         {titleText}
                     </h1>
-                    <div className="px-4 py-2 rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)] font-medium text-sm">
-                        {filteredProducts.length} Products Found
-                    </div>
                 </div>
 
-                {/* Category Filter — names only, no search/sort/price/etc. */}
-                <div
-                    className="flex items-center gap-3 overflow-x-auto pb-5 mb-8 border-b border-[var(--color-border)] scrollbar-thin"
-                    role="tablist"
-                    aria-label="Filter products by category"
-                >
+                {/* --- UNIFIED CATEGORY DROPDOWN --- */}
+                <div className="mb-8 relative w-full md:max-w-xs">
                     <button
                         type="button"
-                        role="tab"
-                        aria-selected={selectedCategory === "all"}
-                        onClick={() => handleCategoryClick(null)}
-                        className={`shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ${
-                            selectedCategory === "all"
-                                ? "bg-[var(--color-accent)] text-[var(--color-white)]"
-                                : "bg-[var(--color-section)] text-[var(--color-text)] hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-accent)]"
-                        }`}
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="w-full flex items-center justify-between px-5 py-3.5 bg-[var(--color-section)] border border-[var(--color-border-strong)] rounded-xl text-sm font-bold text-[var(--color-primary)] active:scale-[0.99] transition-transform duration-100"
                     >
-                        All Products
+                        <span className="flex items-center gap-2">
+                            <span className="text-[var(--color-accent)]">✦</span>
+                            {selectedCategory === "all" ? "All Products" : titleText}
+                        </span>
+                        <span className="text-xs transition-transform duration-200" style={{ transform: isMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                            &#9660;
+                        </span>
                     </button>
 
-                    {topLevelCategories.map((cat) => {
-                        const catId = cat._id || cat.id;
-                        const isActive = String(selectedCategory) === String(catId);
-                        return (
+                    {/* Dropdown Options List */}
+                    {isMenuOpen && (
+                        <div className="absolute left-0 right-0 z-40 mt-2 p-2 bg-[var(--color-card)] border border-[var(--color-border-strong)] rounded-xl shadow-[var(--shadow-lg)] animate-fade-in max-h-80 overflow-y-auto">
                             <button
-                                key={catId}
                                 type="button"
-                                role="tab"
-                                aria-selected={isActive}
-                                onClick={() => handleCategoryClick(cat.slug)}
-                                className={`shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ${
-                                    isActive
-                                        ? "bg-[var(--color-accent)] text-[var(--color-white)]"
-                                        : "bg-[var(--color-section)] text-[var(--color-text)] hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-accent)]"
+                                onClick={() => handleCategoryClick(null)}
+                                className={`w-full text-left px-4 py-3 rounded-lg text-xs font-semibold transition-colors ${
+                                    selectedCategory === "all"
+                                        ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+                                        : "text-[var(--color-text)] hover:bg-[var(--color-section)] active:bg-[var(--color-section)]"
                                 }`}
                             >
-                                {cat.title}
+                                All Products
                             </button>
-                        );
-                    })}
+                            
+                            {topLevelCategories.map((cat) => {
+                                const catId = cat._id || cat.id;
+                                const isActive = String(selectedCategory) === String(catId);
+                                
+                                return (
+                                    <button
+                                        key={catId}
+                                        type="button"
+                                        onClick={() => handleCategoryClick(cat.slug)}
+                                        className={`w-full text-left px-4 py-3 rounded-lg text-xs font-semibold transition-colors border-t border-[var(--color-border)]/20 ${
+                                            isActive
+                                                ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+                                                : "text-[var(--color-text)] hover:bg-[var(--color-section)] active:bg-[var(--color-section)]"
+                                        }`}
+                                    >
+                                        {cat.title}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
 
                 {/* Catalog Card Grid */}
@@ -246,11 +253,7 @@ export default function ProductsContent() {
                                         <p className="mt-3 text-sm text-[var(--color-secondary)] line-clamp-2">
                                             {product.metaDescription || "Premium quality product"}
                                         </p>
-                                        <div className="inline-block mt-4 text-[var(--color-accent)] font-medium">
-                                            <span className="inline-flex items-center gap-2 text-[var(--color-accent)] font-semibold">
-                                                View Details &rarr;
-                                            </span>
-                                        </div>
+                                        
                                     </div>
                                 </Link>
                             );
@@ -333,7 +336,7 @@ export default function ProductsContent() {
                             onClick={() => setCurrentPage(currentPage + 1)}
                             className={`flex items-center gap-1 px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium transition-all duration-200 ${currentPage === totalPages
                                 ? "bg-[var(--color-section)] text-[var(--color-text-muted)] border-[var(--color-border)] cursor-not-allowed"
-                                : "bg-[var(--color-card)] text-[var(--color-primary)] border-[var(--color-border-strong)] hover:bg-[var(--color-accent)] hover:text-[var(--color-white)] shadow-sm"
+                                : "bg-[var(--color-card)] text(--color-primary)] border-[var(--color-border-strong)] hover:bg-[var(--color-accent)] hover:text-[var(--color-white)] shadow-sm"
                                 }`}
                         >
                             Next &rarr;
