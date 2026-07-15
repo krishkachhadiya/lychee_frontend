@@ -307,58 +307,108 @@ h1, h2, h3, h4, h5,
   animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Scroll-reveal: paired with the useScrollReveal hook (src/lib/useScrollReveal.js).
-   Starts hidden, hook adds .is-visible once the element enters the viewport. */
+/* ==========================================================================
+   Premium Scroll-Reveal Effect
+   ========================================================================== */
 .reveal-on-scroll {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Slightly tighter initial translation (16px vs 24px) feels more crisp and cohesive */
+  transform: translateY(16px);
+  /* will-change hints the browser to use GPU acceleration, preventing stutter/jank */
+  will-change: opacity, transform;
+  /* Using a cinematic 0.8s ease-out-expo curve for a smoother deceleration */
+  transition: 
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .reveal-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Shimmer skeleton — used for all API-driven loading states */
+
+/* ==========================================================================
+   Ultra-Smooth Skeleton Shimmer
+   ========================================================================== */
 @keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
   100% {
     transform: translateX(100%);
   }
 }
+
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: var(--color-section);
+  /* Fallback color if variable is missing, using a neutral low-contrast base */
+  background: var(--color-section, #f3f4f6); 
 }
+
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
-  transform: translateX(-100%);
+  /* A smoother, angled gradient provides a significantly more realistic glare effect */
   background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.55),
-    transparent
+    100deg,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 80%
   );
-  animation: shimmer 1.6s ease-in-out infinite;
+  /* Slowed down from 1.8s to 2.5s for a calmer, high-end look */
+  animation: shimmer 2.5s linear infinite;
 }
 
-/* Button micro-interaction (transition already declared once above via var(--transition)) */
+/* Dark mode support: Standard white shimmer looks broken on dark backgrounds */
+@media (prefers-color-scheme: dark) {
+  .skeleton::after {
+    background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0) 80%
+    );
+  }
+}
+
+
+/* ==========================================================================
+   Button Micro-Interactions (Fluid Active State)
+   ========================================================================== */
+.btn {
+  /* Ensuring transition is smoothly explicitly stated for transforms if missing */
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Combined with :focus-visible for better interactive feedback */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
 .btn:active {
+  /* Premium scale reduction (0.97 matches native iOS/OSX UI tactile response) */
   transform: translateY(0) scale(0.97);
+  transition-duration: 0.05s; /* Snappy response going down, smooth recovery coming up */
 }
 
+
+/* ==========================================================================
+   Accessibility & Hardware Optimization Overrides
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
-  .skeleton::after {
-    animation: none;
-  }
+  .skeleton::after,
   .reveal-on-scroll {
-    opacity: 1;
-    transform: none;
-    transition: none;
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
   }
+  
   * {
     scroll-behavior: auto !important;
   }

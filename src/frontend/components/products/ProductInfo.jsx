@@ -3,12 +3,26 @@
 import Link from "next/link";
 
 export default function ProductSidebarInfo({ product }) {
-  const categoryName = product?.subcategory?.title || product?.category?.title || "";
-  const specifications = product?.specifications?.filter(Boolean) || [];
+  const categoryName =
+    product?.subcategory?.title ||
+    product?.category?.title ||
+    "";
+
+  const specifications =
+    product?.specifications?.filter(Boolean) || [];
+
+  const productCode =
+    product?.productCode ||
+    product?._id ||
+    "";
+
+  const productName =
+    product?.title ||
+    "";
 
   return (
     <div className="w-full flex flex-col gap-6">
-      
+
       {/* --- PART 1: PRODUCT INFO BLOCK --- */}
       <div>
         <h1 className="mt-5 text-4xl font-bold text-[var(--color-primary)]">
@@ -21,17 +35,24 @@ export default function ProductSidebarInfo({ product }) {
 
         {/* Product ID & Category Quick Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-          {/* Product ID */}
+
+          {/* Product Code */}
           <div className="bg-[var(--color-section)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-5">
-            <p className="text-sm text-[var(--color-text-muted)]">Product Code</p>
+            <p className="text-sm text-[var(--color-text-muted)]">
+              Product Code
+            </p>
+
             <p className="mt-2 font-semibold text-[var(--color-primary)] truncate">
-              {product?.productCode || product?._id}
+              {productCode}
             </p>
           </div>
 
           {/* Category */}
           <div className="bg-[var(--color-section)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-5">
-            <p className="text-sm text-[var(--color-text-muted)]">Category</p>
+            <p className="text-sm text-[var(--color-text-muted)]">
+              Category
+            </p>
+
             <p className="mt-2 font-semibold text-[var(--color-primary)] truncate">
               {categoryName}
             </p>
@@ -41,10 +62,16 @@ export default function ProductSidebarInfo({ product }) {
         {/* Action Button */}
         <div className="flex gap-4 mt-8">
           <Link
-            href="/contact-us"
+            href={{
+              pathname: "/contact-us",
+              query: {
+                productCode,
+                productName,
+              },
+            }}
             className="w-full text-center border border-[var(--color-accent)] text-[var(--color-accent)] px-6 py-3 rounded-[var(--radius-md)] hover:bg-[var(--color-accent)] hover:text-[var(--color-white)] transition font-medium"
           >
-            Inquiry now
+            Inquiry Now
           </Link>
         </div>
       </div>

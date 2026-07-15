@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getRootCategoryId } from "../../../lib/category-tree"; // <-- adjust path if needed
+import { getRootCategoryId } from "../../../lib/category-tree";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
