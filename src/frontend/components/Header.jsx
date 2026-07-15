@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { buildMailtoHref } from "@/lib/mailto";
+import { FiPhone, FiMail, FiMapPin, FiMenu, FiX } from "react-icons/fi";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:5000";
@@ -75,13 +76,15 @@ export default function Header() {
             href={`tel:+917016834146`}
             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
           >
-            <span>📞</span> +91 70168 34146
+            <FiPhone className="text-lg" />
+            +91 70168 34146
           </a>
           <a
             href={buildMailtoHref("lycheebathaccessories@gmail.com")}
             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
           >
-            <span>✉️</span> lycheebathaccessories@gmail.com
+            <FiMail className="text-lg" />
+            lycheebathaccessories@gmail.com
           </a>
         </div>
       </div>
@@ -188,7 +191,7 @@ export default function Header() {
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
             >
-              {menuOpen ? "✕" : "☰"}
+              {menuOpen ? <FiX /> : <FiMenu />}
             </button>
           </div>
         </div>
