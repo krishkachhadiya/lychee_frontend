@@ -3,20 +3,26 @@
 import { useEffect, useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { buildMailtoHref } from "@/lib/mailto";
+import { useSearchParams } from "next/navigation";
 
 export default function BalancedContactPage() {
   const recaptchaRef = useRef(null);
+  const searchParams = useSearchParams();
 
-  // --- State for Contact Info API ---
+  const productCode = searchParams.get("productCode") || "";
+  const productName = searchParams.get("productName") || "";
+  const isProductInquiry = Boolean(productCode);
+
   const [settings, setSettings] = useState(null);
   const [isSettingsLoading, setIsSettingsLoading] = useState(true);
 
-  // --- State for Contact Form ---
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     subject: "",
+    productCode: "",
+    productName: "",
     message: "",
   });
   const [captchaToken, setCaptchaToken] = useState(null);
@@ -25,17 +31,12 @@ export default function BalancedContactPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch Settings Data
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/settings`
-        );
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/settings`);
         const result = await response.json();
-        if (result.success) {
-          setSettings(result.data);
-        }
+        if (result.success) setSettings(result.data);
       } catch (error) {
         console.error("Failed fetching settings:", error);
       } finally {
@@ -44,6 +45,16 @@ export default function BalancedContactPage() {
     }
     fetchSettings();
   }, []);
+
+  useEffect(() => {
+    if (!productCode) return;
+    setFormData((prev) => ({
+      ...prev,
+      productCode,
+      productName,
+      subject: prev.subject || `Product Inquiry - ${productName || productCode}`,
+    }));
+  }, [productCode, productName]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -88,7 +99,6 @@ export default function BalancedContactPage() {
       setErrors(validationErrors);
       return;
     }
-
     setErrors({});
 
     try {
@@ -106,7 +116,18 @@ export default function BalancedContactPage() {
 
       if (response.ok && data.success) {
         setSuccessMessage("Inquiry submitted successfully.");
-        setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+
+        // ✅ FORCE CLEAR EVERYTHING: Hard resets all states to empty strings
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          productCode: "", // Completely removed/emptied
+          productName: "", // Completely removed/emptied
+          message: ""
+        });
+
         setCaptchaToken(null);
         recaptchaRef.current?.reset();
       } else {
@@ -125,50 +146,33 @@ export default function BalancedContactPage() {
 
   return (
     <section className="bg-[var(--color-section)] min-h-screen pb-12 sm:pb-20 md:pb-28">
-
-
-      {/* 2. THE MAIN SPLIT GRID CONTAINER */}
       <div className="container-luxury w-full mt-8 md:mt-12">
-
-        {/* Card block settings optimized for Mobile vs Desktop display */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-0 bg-transparent md:bg-[var(--color-card)] rounded-none md:rounded-[var(--radius-xl)] border-0 md:border overflow-hidden shadow-none md:shadow-2xl">
 
-          {/* LEFT 50%: Info Details panel */}
+          {/* LEFT PANEL */}
           <div className="p-2 sm:p-6 md:p-10 lg:p-16 md:border-r border-[var(--color-border)] flex flex-col justify-between md:bg-gradient-to-b md:from-[var(--color-card)] md:to-[var(--color-section)]">
             <div className="space-y-3 md:space-y-4">
               <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-accent)] block">Get In Touch</span>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--color-primary)]">
-                Contact Information
-              </h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--color-primary)]">Contact Information</h1>
               <p className="text-[var(--color-secondary)] max-w-sm text-sm sm:text-base leading-relaxed">
                 Have questions regarding our products or dealer network? Contact our desk directly or drop an inquiry.
               </p>
             </div>
 
-            {/* Individual Info Segments */}
             <div className="mt-6 md:mt-12 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-4 sm:gap-6 md:gap-8">
-              {/* Address */}
               <div className="border-b sm:border-b-0 md:border-b border-[var(--color-border)] pb-3 sm:pb-0 md:pb-4 last:border-b-0">
                 <h2 className="text-xs uppercase font-bold tracking-wider text-[var(--color-secondary)]">Our Location</h2>
                 {isSettingsLoading ? (
                   <div className="h-4 w-40 bg-[var(--color-border)] animate-pulse rounded mt-2" />
                 ) : settings?.address ? (
-                  <a
-                    href="https://maps.app.goo.gl/XWgJTghvD135CPP86"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium hover:text-[var(--color-primary)] transition-colors duration-300 cursor-pointer"
-                  >
+                  <a href="https://maps.app.goo.gl/XWgJTghvD135CPP86" target="_blank" rel="noopener noreferrer" className="inline-block mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium hover:text-[var(--color-primary)] transition-colors duration-300 cursor-pointer">
                     {settings.address}
                   </a>
                 ) : (
-                  <p className="mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium">
-                    Address Not Available
-                  </p>
+                  <p className="mt-1 text-[var(--color-text)] text-sm sm:text-base font-medium">Address Not Available</p>
                 )}
               </div>
 
-              {/* Phone */}
               <div className="border-b sm:border-b-0 md:border-b border-[var(--color-border)] pb-3 sm:pb-0 md:pb-4 last:border-b-0">
                 <h2 className="text-xs uppercase font-bold tracking-wider text-[var(--color-secondary)]">Call Support</h2>
                 {isSettingsLoading ? (
@@ -182,7 +186,6 @@ export default function BalancedContactPage() {
                 )}
               </div>
 
-              {/* Email */}
               <div className="pb-3 sm:pb-0 md:pb-0">
                 <h2 className="text-xs uppercase font-bold tracking-wider text-[var(--color-secondary)]">Email Desk</h2>
                 {isSettingsLoading ? (
@@ -202,10 +205,9 @@ export default function BalancedContactPage() {
             </div>
           </div>
 
-          {/* RIGHT 50%: Form Entry panel */}
+          {/* RIGHT PANEL (FORM) */}
           <div className="p-4 sm:p-6 md:p-10 lg:p-16 bg-[var(--color-card)] rounded-[var(--radius-xl)] md:rounded-none border md:border-0 border-[var(--color-border)] shadow-md md:shadow-none flex flex-col justify-center">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-
               <div>
                 <h2 className="text-lg sm:text-xl font-bold text-[var(--color-primary)]">Send a Message</h2>
                 <p className="text-xs text-[var(--color-secondary)] mt-0.5">Please fill out the details below.</p>
@@ -213,111 +215,63 @@ export default function BalancedContactPage() {
 
               <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    placeholder="Your Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-                  />
+                  <input type="text" name="name" required placeholder="Your Name" value={formData.name}
+                    onChange={handleChange} className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm text-[var(--color-text)] outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition" />
                   {errors.name && <p className="text-[var(--danger)] text-xs mt-1 px-1">{errors.name}</p>}
                 </div>
 
                 <div>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="Your Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-                  />
+                  <input type="email" name="email" required placeholder="Your Email" value={formData.email}
+                    onChange={handleChange} className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm text-[var(--color-text)] outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition" />
                   {errors.email && <p className="text-[var(--danger)] text-xs mt-1 px-1">{errors.email}</p>}
                 </div>
 
+                {isProductInquiry && (
+                  <div>
+                    <input type="text" name="productCode" placeholder="Product Code" value={formData.productName ? `${formData.productName} (${formData.productCode})` : formData.productCode}
+                      readOnly
+                      aria-label="Product Info"
+                      className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm text-[var(--color-text)] opacity-100 outline-none cursor-default font-medium"
+                    />
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <input
-                      type="text"
-                      name="phone"
-                      required
-                      placeholder="Phone (10 digits)"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-                    />
+                    <input type="text" name="phone" required placeholder="Phone (10 digits)" value={formData.phone}
+                      onChange={handleChange} className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm text-[var(--color-text)] outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition" />
                     {errors.phone && <p className="text-[var(--danger)] text-xs mt-1 px-1">{errors.phone}</p>}
                   </div>
                   <div>
-                    <input
-                      type="text"
-                      name="subject"
-                      required
-                      placeholder="Subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-                    />
+                    <input type="text" name="subject" required placeholder="Subject" value={formData.subject}
+                      onChange={handleChange} className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm text-[var(--color-text)] outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition" />
                     {errors.subject && <p className="text-[var(--danger)] text-xs mt-1 px-1">{errors.subject}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <textarea
-                    rows={4}
-                    name="message"
-                    required
-                    placeholder="Write your message details here..."
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition resize-none"
-                  />
+                  <textarea rows={4} name="message" required placeholder="Write your message details here..." value={formData.message}
+                    onChange={handleChange} className="w-full border bg-[var(--color-section)] border-[var(--color-border)] rounded-[var(--radius-md)] px-4 py-3 text-sm text-[var(--color-text)] outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition resize-none" />
                   {errors.message && <p className="text-[var(--danger)] text-xs mt-1 px-1">{errors.message}</p>}
                 </div>
               </div>
 
-              {/* Action Rows */}
               <div className="space-y-4 pt-1">
                 <div className="max-w-full overflow-x-auto overflow-y-hidden py-1 clear-both">
                   <div className="inline-block origin-left scale-[0.85] xs:scale-100">
-                    <ReCAPTCHA
-                      ref={recaptchaRef}
-                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                      onChange={handleCaptchaChange}
-                    />
+                    <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} onChange={handleCaptchaChange} />
                   </div>
                 </div>
                 {errors.captcha && <p className="text-[var(--danger)] text-xs px-1">{errors.captcha}</p>}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-[var(--color-accent)] text-white py-3 rounded-[var(--radius-md)] font-semibold shadow-md hover:opacity-95 active:scale-[0.99] transition-all disabled:opacity-50 text-sm sm:text-base inline-flex items-center justify-center gap-2"
-                >
-                  {loading && (
-                    <span
-                      className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"
-                      aria-hidden="true"
-                    />
-                  )}
+                <button type="submit" disabled={loading} className="w-full bg-[var(--color-accent)] text-white py-3 rounded-[var(--radius-md)] font-semibold shadow-md hover:opacity-95 active:scale-[0.99] transition-all disabled:opacity-50 text-sm sm:text-base inline-flex items-center justify-center gap-2">
+                  {loading && <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" aria-hidden="true" />}
                   {loading ? "Sending Entry..." : "Send Message"}
                 </button>
               </div>
 
-              {/* Status messages alerts */}
-              {successMessage && (
-                <div className="p-3 bg-[var(--success)]/10 text-[var(--success)] rounded-[var(--radius-md)] text-xs font-medium">
-                  {successMessage}
-                </div>
-              )}
-              {errorMessage && (
-                <div className="p-3 bg-[var(--danger)]/10 text-[var(--danger)] rounded-[var(--radius-md)] text-xs font-medium">
-                  {errorMessage}
-                </div>
-              )}
+              {successMessage && <div className="p-3 bg-[var(--success)]/10 text-[var(--success)] rounded-[var(--radius-md)] text-xs font-medium">{successMessage}</div>}
+              {errorMessage && <div className="p-3 bg-[var(--danger)]/10 text-[var(--danger)] rounded-[var(--radius-md)] text-xs font-medium">{errorMessage}</div>}
             </form>
           </div>
 
