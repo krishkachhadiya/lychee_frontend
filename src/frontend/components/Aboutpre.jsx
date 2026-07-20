@@ -26,7 +26,7 @@ export default function Aboutpre({ settings, headingLevel = "h2" }) {
               <img
                 src={imageUrl}
                 alt="About Lychee"
-                className="w-full h-[350px] sm:h-[450px] lg:h-[600px] object-cover transition-transform duration-500 hover:scale-105"
+                className="w-full h-[350px] sm:h-[450px] lg:h-[600px] object-fill transition-transform duration-500 hover:scale-105"
               />
             </div>
           </div>

@@ -5,16 +5,16 @@ import Link from "next/link";
 
 const SLIDES = [
   {
-    image: "/slide_1.png",
-    category: "hawk-pvd-rose-gold-collection",
+    image: "/slide-1.png",
+    category: "eagle-collection",
   },
   {
-    image: "/slide_2.png",
-    category: "electronics",
+    image: "/slide-2.png",
+    category: "falcon-collection",
   },
   {
-    image: "/dc-1206.jpg",
-    category: "diamond-collection",
+    image: "/slide-3.png",
+    category: "hawk-collection",
   },
 ];
 
