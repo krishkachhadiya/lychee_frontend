@@ -1,5 +1,6 @@
 import "./globals.css";
 import { getSettings, absoluteImageUrl } from "@/lib/server-data";
+import { Analytics } from '@vercel/analytics/next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -38,7 +39,10 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

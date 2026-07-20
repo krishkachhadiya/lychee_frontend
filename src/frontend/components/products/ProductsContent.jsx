@@ -174,7 +174,6 @@ export default function ProductsContent() {
                         className="w-full flex items-center justify-between px-5 py-3.5 bg-[var(--color-section)] border border-[var(--color-border-strong)] rounded-xl text-sm font-bold text-[var(--color-primary)] active:scale-[0.99] transition-transform duration-100"
                     >
                         <span className="flex items-center gap-2">
-                            <span className="text-[var(--color-accent)]">✦</span>
                             {selectedCategory === "all" ? "All Products" : titleText}
                         </span>
                         <span className="text-xs transition-transform duration-200" style={{ transform: isMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
