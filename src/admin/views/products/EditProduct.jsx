@@ -11,18 +11,20 @@ const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_BASE_URL ||
   "http://localhost:5000";
 
-function getImageUrl(imagePath) {
-  if (!imagePath) return "/no-image.png";
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "/no-image.png";
 
-  if (
-    imagePath.startsWith("http://") ||
-    imagePath.startsWith("https://")
-  ) {
-    return imagePath;
-  }
-
-  return `${BACKEND_URL}${imagePath}`;
-}
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+    if (imagePath.startsWith("/uploads")) {
+      return `${BACKEND_URL}${imagePath}`;
+    }
+    if (imagePath.startsWith("uploads/")) {
+      return `${BACKEND_URL}/${imagePath}`;
+    }
+    return `${BACKEND_URL}/uploads/${imagePath}`;
+  };
 
 export default function EditProductPage() {
   const router = useRouter();

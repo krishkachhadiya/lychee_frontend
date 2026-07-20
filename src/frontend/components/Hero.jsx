@@ -15,7 +15,7 @@ const SLIDES = [
   {
     image: "/slide-3.png",
     category: "hawk-collection",
-  },
+  },  
 ];
 
 export default function Hero() {
@@ -151,10 +151,8 @@ export default function Hero() {
               >
                 Contact Us
               </Link>
-
             </div>
           </div>
-
         </div>
       </div>
     </section>
